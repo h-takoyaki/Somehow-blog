@@ -7,6 +7,7 @@ tags:
     - [graph]
     - [VQA]
 categories: 论文阅读
+mathjax: true
 ---
 
 
@@ -21,7 +22,7 @@ categories: 论文阅读
 
 通过更合理(reasonable)的video encoding 和 QA solution,我们表明VGT在挑战动态关系推理的无预训练场景的任务上有更好的表现。VGT也可以从supervised cross-modal pretraining 中获益，并且所需要的数据量要小几个数量级。
 
-[论文代码地址](https://github.com/sail-sg/VGT)
+[论文code地址](https://github.com/sail-sg/VGT)
 
 
 ## 1. Introduction
@@ -97,7 +98,7 @@ $$
 
 ### 3.3 Dynamic Graph Transformer
 
-dynamic graph transformer(DGT) 以clip-wisely $\{G_t\}^{L_v}_{t=1}$为输入，通过挖掘对详解的时间运动(temporal dynamics)和他们的空间交互(spatial interactions)输出一系列表征 $F^{DGT} \in \R ^{d \times k}$。
+dynamic graph transformer(DGT) 以clip-wisely $\{G_t\}^{L_v}_{t=1}$为输入，通过挖掘对详解的时间运动(temporal dynamics)和他们的空间交互(spatial interactions)输出一系列表征 $F^{DGT} \in \mathcal{R} ^{d \times k}$。
 为此，我们依次操作 **a temporal graph transformer unit**, **a spatial graph conviolution unit** 和 **a hierarchical aggregation unit**。
 
 **Temporal Graph Transformer**
@@ -127,9 +128,9 @@ node transformer: 它模拟单个对象行为的变化，从而推断出动态�
 
 基于新的nodes $F'_o = \{F'_{o_i}\}^n_{i=1}$, 我们基于公式4 更新relation matrix $R$, 然后，为了显式建模时间关系动态，我们在更新的关系矩阵上应用edge transformer:
 $$
-\mathcal{R} = \{R_t\}^l_{t=1} \in \R^{l_c \times d_n}
+\mathcal{R} = \{R_t\}^l_{t=1} \in \mathcal{R}^{l_c \times d_n}
 $$
-where $\mathcal{R} = \{R_t\}^l_{t=1} \in \R^{l_c \times d_n} (dn = n2)$ 是邻接矩阵的 row-wisely 扩充. 我们的动机是在静态帧中捕获的关系可能是虚假的(spurious)、微不足道的(trivial)或不完整的(incomplete)。edge transformer可以帮助校准错误的关系并召回丢失的关系。为简洁起见，我们将第 t 帧的时间上下文图称为 $G_{out_t} = (F'_{ot} , R'_{t})$。
+where $\mathcal{R} = \{R_t\}^l_{t=1} \in \mathcal{R}^{l_c \times d_n} (dn = n2)$ 是邻接矩阵的 row-wisely 扩充. 我们的动机是在静态帧中捕获的关系可能是虚假的(spurious)、微不足道的(trivial)或不完整的(incomplete)。edge transformer可以帮助校准错误的关系并召回丢失的关系。为简洁起见，我们将第 t 帧的时间上下文图称为 $G_{out_t} = (F'_{ot} , R'_{t})$。
 
 **spatial graph convolution**
 temporal graph transformer专注于时间关系推理。为了推理对象空间交互，我们在所有 $l_v$ 图上应用 U 层图注意力卷积:
