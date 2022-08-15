@@ -20,7 +20,7 @@ id_rsa.pub 可以改名 id_rsa.pub.somehow
 3. 将公钥传入authorized_keys文件中
 ~~~shell
 cd ~/.ssh
-cat id_rsa.pub.hzh >> authorized_keys
+cat id_rsa.pub.somehow >> authorized_keys
 ~~~
 
 4. 修改vscode的config
