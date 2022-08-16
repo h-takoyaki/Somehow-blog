@@ -22,7 +22,7 @@ apt upgrade
 screen -S name      # 新建screen
 screen -ls          # 查看screen列表
 screen -r name/id   # 恢复screen
-kill -9 name/id     # 删除screen
+screen -X -S name/id quit     # 删除screen
 ~~~
 
 ## 参考资料
