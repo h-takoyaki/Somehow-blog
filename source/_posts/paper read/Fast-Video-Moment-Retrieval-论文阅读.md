@@ -58,7 +58,7 @@ where $w_{l}=\vec{w}_{l} \| \overleftarrow{\vec{w}}_{l}$ is the concatenation of
 ### 3.2. Fine-grained Semantic Extractor
 现阶段的许多VMR方法都忽略了句子的内在和细粒度语义结构。
 使用工具[Diving Into The Relations: Leveraging Semantic and Visual Structures For Video Moment Retrieval](https://ieeexplore.ieee.org/document/9428369)构建语义角色树(semantic role tree)。
-在书中将verb和noun作为叶子节点，以图为例靠近根节点的phrase能够指引下层的phrase。所以作者利用上层特征来评估下层特征的重要性。
+在树中将verb和noun作为叶子节点，以图为例靠近根节点的phrase能够指引下层的phrase。所以作者利用上层特征来评估下层特征的重要性。
 $$
 \alpha^{(j)}_k = W_\alpha(tanh(W_{top}\hat{g}^{(i)} || W_{low}\hat{g}^{(j)}_k))  \\
 \hat{g}^{(i)} = \sum a^{(i)}_lg^{(i)}_l
