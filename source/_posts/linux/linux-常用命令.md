@@ -69,3 +69,9 @@ carla
 CarlaUE4     CHANGELOG      Dockerfile  HDMaps  ImportAssets.sh  Manifest_DebugFiles_Linux.txt  PythonAPI  Tools
 CarlaUE4.sh  Co-Simulation  Engine      Import  LICENSE          Plugins                        README     VERSION
 ~~~
+
+## 收集文件夹中的所有图片
+例如：需要将这个文件夹下的所有图片的名字汇总，产生训练集。
+~~~shell
+ls -l | grep png|awk '{print $9}'| xargs -I {} echo {} >> test1.txt
+~~~
