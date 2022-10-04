@@ -103,9 +103,9 @@ torchrun     --standalone       \
   def load_data(train_file, test_file, batch_size=32):
       train_dataset = SentenceDataset(train_file)
       test_dataset = SentenceDataset(test_file)
-
+  
       train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
-
+  
       train_dataloader = DataLoader(train_dataset, batch_size=batch_size, sampler=train_sampler)
       test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
       return train_dataloader, test_dataloader
@@ -125,6 +125,7 @@ torchrun     --standalone       \
 ## 一些注意点
 
 - batchsize设置：这里的batchsize是每一个GPU上的大小原来为64，4张卡一起训练应该为16（和原来相同的效果）
+
 - dis.barrier() 卡的训练有快有慢，有了这个可以保持同步。注意不要放到单个GPU的代码中
 
   ```python
@@ -133,7 +134,9 @@ torchrun     --standalone       \
           test(test_dataloader, model, loss_fn)
           dist.barrier() # 不是local_rank的进程永远到不了，程序会暂停在这里
   ```
+  
 - bn层需要使用SYNbn
+
 - 如果想要输出可以通过lock_rank,改变不同进程的logging的输出等级
 
   ```python
@@ -149,17 +152,55 @@ torchrun     --standalone       \
       formatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s: %(message)s")
       #logger.setFormatter(formatter)
       # logger.addHandler(ch)
-
+  
       if save_dir:
           fh = logging.FileHandler(os.path.join(save_dir, filename))
           fh.setLevel(logging.DEBUG)
           fh.setFormatter(formatter)
           logger.addHandler(fh)
-
+  
       return logger
   ```
 
   local_rank == 0输出debug信息，local_rank>0只输出error信息。
+  
+- 随机种子
+
+  想要获得相同的结果常常设立随机种子。在生成数据时，如果我们使用了一些随机过程的数据扩充方法，那么，各个进程生成的数据会带有一定的同态性。
+
+  ~~~python
+  import random
+  import numpy as np
+  import torch
+  
+  def init_seeds(seed=0, cuda_deterministic=True):
+      random.seed(seed)
+      np.random.seed(seed)
+      torch.manual_seed(seed)
+      # Speed-reproducibility tradeoff https://pytorch.org/docs/stable/notes/randomness.html
+      if cuda_deterministic:  # slower, more reproducible
+          cudnn.deterministic = True
+          cudnn.benchmark = False
+      else:  # faster, less reproducible
+          cudnn.deterministic = False
+          cudnn.benchmark = True
+          
+  
+  def main():
+      # 一般都直接用0作为固定的随机数种子。
+      init_seeds(0)
+  ~~~
+
+  
+
+  ~~~python
+  def main():
+      rank = torch.distributed.get_rank()
+      # 如果使用了数据扩充的方法，可以让每个进程的seed不一样
+      init_seeds(1 + rank)
+  ~~~
+
+  
 
 ## reference
 
