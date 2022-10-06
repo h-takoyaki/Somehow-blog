@@ -3,7 +3,8 @@ title: pathlib
 date: 2022-10-04 09:24:28
 tags: 
     - [python, package]
-categories: python package
+categories: 
+    -[python, package]
 ---
 将os.path 转化为 pathlib的类使用。
 
